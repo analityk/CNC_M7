@@ -9,4 +9,5 @@ Debug/
 *.o
 *.d
 *.pdf
+*.vs
 !flash.ld
