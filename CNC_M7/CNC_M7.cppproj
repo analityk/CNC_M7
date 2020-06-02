@@ -806,6 +806,14 @@
     <Compile Include="src\ASF\sam\utils\cmsis\same70\include\instance\pioc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\cnc_src\tracker.cpp">
+      <SubType>compile</SubType>
+      <Link>tracker.cpp</Link>
+    </Compile>
+    <Compile Include="src\cnc_src\vector.cpp">
+      <SubType>compile</SubType>
+      <Link>vector.cpp</Link>
+    </Compile>
     <Compile Include="src\mdelay.c">
       <SubType>compile</SubType>
       <Link>mdelay.c</Link>
