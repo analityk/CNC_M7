@@ -15,9 +15,6 @@ public:
 	uint8_t acl_phase;
 	uint8_t dcl_phase;
 
-	int32_t abs_pos_x = 0;
-	int32_t abs_pos_y = 0;
-
 	Vector abs_pos;
 
 	uint32_t step_time;

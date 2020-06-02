@@ -16,8 +16,6 @@
 #include <tracker.h>
 #include <vector.h>
 
-Vector v(0,0);
-
 #define BITS_BY_SLOT	16
 #define TOTAL_BUFFERS	4
 #define MAX_DMA_SIZE	500
@@ -389,11 +387,6 @@ void TC0_Handler(void){
 xdmac_channel_config_t xdmac_ssc_tx_cfg = {0};
 xdmac_channel_config_t xdmac_ssc_rx_cfg = {0};
 
-class A{
-
-};
-
-A a;
 
 int main(void)
 {
