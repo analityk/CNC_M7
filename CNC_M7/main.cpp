@@ -365,28 +365,10 @@ void XDMAC_Handler(void)
 	};
 };
 
-void TC0_Handler(void){
-
-	uint32_t volatile tc0_status0 = REG_TC0_SR0;
-	long_time++;
-
-	if( long_time > 20 ){
-		ledstate++;
-		long_time = 0;
-	};
-
-	//if( ((ledstate % 2) == 1) && (arp_rec == 1)){
-		//pio_set(PIOC, PIO_PC8);
-	//}else{
-		//pio_clear(PIOC, PIO_PC8);
-	//};
-
-	REG_TC0_CCR0 = 5;
-};
-
 xdmac_channel_config_t xdmac_ssc_tx_cfg = {0};
 xdmac_channel_config_t xdmac_ssc_rx_cfg = {0};
 
+DTCM const char dtcm_szymon[] = "SZYMON\n";
 
 int main(void)
 {
@@ -396,9 +378,11 @@ int main(void)
 
 	board_init();
 
-	pio_configure(PIOC, PIO_OUTPUT_0, PIO_PC8, PIO_PULLUP);	// LED
+	// LED
+	pio_configure(PIOC, PIO_OUTPUT_0, PIO_PC8, PIO_PULLUP);
 	pio_clear(PIOC, PIO_PC8);
 
+	//
 	uint16_t b = 3;
 	uint16_t c = 4;
 
@@ -421,25 +405,21 @@ int main(void)
 	delay(0x5FFfffF);
 
 
-	pmc_enable_periph_clk(ID_TC0);
-	tc_set_writeprotect(TC0, 0);
-	tc_init(TC0, 0, 0);
 
-	REG_TC0_CCR0 = 1;
-	REG_TC0_CMR0 = (3<<0) | (1<<15) | (1<<14);
-	REG_TC0_RC0 = 58594;
 
-	REG_TC0_IER0 = (1<<4);
-
-	REG_TC0_CCR0 = 5;
 
 	irq_initialize_vectors();
 
-	irq_register_handler(XDMAC_IRQn, 1);
-	irq_register_handler(GMAC_IRQn, 3);
-	irq_register_handler(TC0_IRQn, 4);
+	//irq_register_handler(XDMAC_IRQn, 1);
+	
+	// do not try change priorities, timers is the most sensitive part of this programs
+	irq_register_handler(TC0_IRQn, 1);	// -> tracker.h
+	irq_register_handler(TC1_IRQn, 2);	// -> tracker.h
+	//irq_register_handler(GMAC_IRQn, 3);
 
 	Enable_global_interrupt();
+
+	while(1){};
 
 	gmac_dev_reset(&gs_gmac_dev, GMAC_QUE_0);
 
