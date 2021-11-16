@@ -252,17 +252,17 @@ const DeviceVectors exception_table = {
 #ifdef _SAME70_USART0_INSTANCE_
         .pfnUSART0_Handler = (void*) USART0_Handler, /* 13 USART 0 */
 #else
-        .pvReserved13      = (void*) (0UL),          /* 13 Reserved */ 
+        .pvReserved13      = (void*) (0UL),          /* 13 Reserved */
 #endif /* _SAME70_USART0_INSTANCE_ */
 #ifdef _SAME70_USART1_INSTANCE_
         .pfnUSART1_Handler = (void*) USART1_Handler, /* 14 USART 1 */
 #else
-        .pvReserved14      = (void*) (0UL),          /* 14 Reserved */ 
+        .pvReserved14      = (void*) (0UL),          /* 14 Reserved */
 #endif /* _SAME70_USART1_INSTANCE_ */
 #ifdef _SAME70_USART2_INSTANCE_
         .pfnUSART2_Handler = (void*) USART2_Handler, /* 15 USART 2 */
 #else
-        .pvReserved15      = (void*) (0UL),          /* 15 Reserved */ 
+        .pvReserved15      = (void*) (0UL),          /* 15 Reserved */
 #endif /* _SAME70_USART2_INSTANCE_ */
         .pfnPIOD_Handler   = (void*) PIOD_Handler,   /* 16 Parallel I/O Controller D */
 #ifdef _SAME70_PIOE_INSTANCE_
@@ -426,7 +426,7 @@ void Reset_Handler(void)
 	EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_GGPB);
 	__DSB();
 	__ISB();
-	
+
 	while (!(EFC->EEFC_FSR & EEFC_FSR_FRDY));      //Wait until the status falls to 0 (EFFC command is complete)
 
 	ulEEFC_bits = EFC->EEFC_FRR;
@@ -556,8 +556,17 @@ void Reset_Handler(void)
  */
 void Dummy_Handler(void)
 {
-        while (1) {
-        }
+    while (1) {
+		pmc_enable_periph_clk(ID_PIOC);
+		pio_configure(PIOC, (0x6u << 27), PIO_PC8, 0);
+
+	    pio_clear(PIOC, PIO_PC8);
+	    uint32_t volatile z = 0xff;
+	    while(z--){};
+	    pio_set(PIOC, PIO_PC8);
+	    z = 0xFFFFF;
+	    while(z--){};
+    }
 }
 
 #ifdef __cplusplus

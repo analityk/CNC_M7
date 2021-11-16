@@ -9,12 +9,13 @@
 #include <string.h>
 #include "mini_ip.h"
 #include "conf_eth.h"
-#include <array.h>
+#include <../src/containers/array.h>
 #include <math.h>
+#include <ClassSerial.h>
+#include <ClassGpio.h>
+#include <stdlib.h>
 
 
-#include <tracker.h>
-#include <vector.h>
 
 #define BITS_BY_SLOT	16
 #define TOTAL_BUFFERS	4
@@ -53,7 +54,7 @@ DTCM uint8_t gs_uc_mac_address[] = {
 	ETHERNET_CONF_ETHADDR3, ETHERNET_CONF_ETHADDR4, ETHERNET_CONF_ETHADDR5
 };
 
-DTCM uint8_t gs_uc_ip_address[] = { 192, 168, 0, 20 };
+DTCM uint8_t gs_uc_ip_address[] = { 192, 168, 0, 34 };
 
 /** The GMAC driver instance */
 DTCM gmac_device_t gs_gmac_dev;
@@ -179,16 +180,27 @@ void gmac_process_udp_packet(uint8_t* p_uc_data, uint32_t ul_size){
 
 
 	// port numbers was swaped
-	if(SWAP16(udp_header->scr_port) != 52001)return;
+	//if(SWAP16(udp_header->scr_port) != 52001)return;
 
-	uint16_t gmac_payload = udp_new_packet_length(p_uc_data, 4);
-
+	uint16_t gmac_payload = udp_new_packet_length(p_uc_data, 10);
 	udp_header->crc = 0;
 
-	udp_pdata[0] = xdmac_chan_0_status;
-	udp_pdata[1] = xdmac_chan_0_status << 8;
-	udp_pdata[2] = xdmac_chan_0_status << 16;
-	udp_pdata[3] = manage_byte;
+	for(uint8_t i=0; i< 6; i++){
+		udp_pdata[i] = 1;//p_eth->et_dest[i];
+	};
+
+	for(uint8_t i=0; i<4; i++){
+		udp_pdata[6+i] = 2;//ip_header->ip_dst[i];
+	};
+
+	//uint16_t gmac_payload = udp_new_packet_length(p_uc_data, 4);
+//
+	//udp_header->crc = 0;
+//
+	//udp_pdata[0] = xdmac_chan_0_status;
+	//udp_pdata[1] = xdmac_chan_0_status << 8;
+	//udp_pdata[2] = xdmac_chan_0_status << 16;
+	//udp_pdata[3] = manage_byte;
 
 	gmac_dev_write(&gs_gmac_dev, GMAC_QUE_0, p_uc_data, gmac_payload, NULL);
 
@@ -322,7 +334,7 @@ static void gmac_process_eth_packet(uint8_t *p_uc_data, uint32_t ul_size)
 		default:break;
 	};
 };
-
+//
 void GMAC_Handler(void)
 {
 	gmac_handler(&gs_gmac_dev, GMAC_QUE_0);
@@ -335,41 +347,6 @@ void GMAC_Handler(void)
 #define LED_CLR { pio_set(PIOC, PIO_PC8); }
 #define LED_SET { pio_clear(PIOC, PIO_PC8); }
 
-volatile uint32_t led_dma_state = 0;
-
-volatile uint8_t txb = 2;
-volatile uint8_t ntxb = 0;
-
-volatile uint8_t rxb = 1;
-volatile uint8_t nrxb = 0;
-
-void XDMAC_Handler(void)
-{
-	uint32_t volatile xdmac_gis = xdmac_get_interrupt_status(XDMAC);
-	UNUSED(xdmac_gis);
-
-	xdmac_chan_0_status = xdmac_channel_get_interrupt_status(XDMAC, XDMA_SSC_TX_CH);
-	if( xdmac_chan_0_status == 1){
-		txb++;
-		if(txb > TOTAL_BUFFERS){
-			txb = 1;
-		};
-	};
-
-	xdmac_chan_1_status = xdmac_channel_get_interrupt_status(XDMAC, XDMA_SSC_RX_CH);
-	if( xdmac_chan_1_status == 1){
-		rxb++;
-		if(rxb > TOTAL_BUFFERS){
-			rxb = 1;
-		};
-	};
-};
-
-xdmac_channel_config_t xdmac_ssc_tx_cfg = {0};
-xdmac_channel_config_t xdmac_ssc_rx_cfg = {0};
-
-DTCM const char dtcm_szymon[] = "SZYMON\n";
-
 int main(void)
 {
     /* Initialize the SAM system */
@@ -380,9 +357,11 @@ int main(void)
 
 	// LED
 	pio_configure(PIOC, PIO_OUTPUT_0, PIO_PC8, PIO_PULLUP);
-	pio_clear(PIOC, PIO_PC8);
 
-	//
+	pio_configure(PIOA, PIO_OUTPUT_0, PIO_PA2, PIO_DEFAULT);
+
+	fpu_enable();
+
 	uint16_t b = 3;
 	uint16_t c = 4;
 
@@ -392,6 +371,7 @@ int main(void)
 
 	/* Enable GMAC clock */
 	pmc_enable_periph_clk(ID_GMAC);
+
 
 	gmac_option.uc_copy_all_frame = 0;
 	gmac_option.uc_no_boardcast = 0;
@@ -405,48 +385,49 @@ int main(void)
 	delay(0x5FFfffF);
 
 
-
-
-
 	irq_initialize_vectors();
 
 	//irq_register_handler(XDMAC_IRQn, 1);
-	
-	// do not try change priorities, timers is the most sensitive part of this programs
-	irq_register_handler(TC0_IRQn, 1);	// -> tracker.h
-	irq_register_handler(TC1_IRQn, 2);	// -> tracker.h
-	//irq_register_handler(GMAC_IRQn, 3);
+
+
+	irq_register_handler(GMAC_IRQn, 3);
 
 	Enable_global_interrupt();
 
-	while(1){};
+	//gmac_dev_reset(&gs_gmac_dev, GMAC_QUE_0);
+//
+	//ethernet_phy_reset(GMAC, 0);
 
-	gmac_dev_reset(&gs_gmac_dev, GMAC_QUE_0);
-
-	ethernet_phy_reset(GMAC, 0);
-
-	/* Init MAC PHY driver */
-	if (ethernet_phy_init(GMAC, BOARD_GMAC_PHY_ADDR, sysclk_get_cpu_hz()) != GMAC_OK) {
-		bc = 3;
-	};
-
-	/* Auto Negotiate, work in RMII mode */
-	if (ethernet_phy_auto_negotiate(GMAC, BOARD_GMAC_PHY_ADDR) != GMAC_OK) {
-		bc = 4;
-	}
-
-	/* Establish ethernet link */
-	while (ethernet_phy_set_link(GMAC, BOARD_GMAC_PHY_ADDR, 1) != GMAC_OK) {
-		bc = 5;
-	};
+	///* Init MAC PHY driver */
+	//if (ethernet_phy_init(GMAC, BOARD_GMAC_PHY_ADDR, sysclk_get_cpu_hz()) != GMAC_OK) {
+		//bc = 3;
+	//};
+//
+	///* Auto Negotiate, work in RMII mode */
+	//if (ethernet_phy_auto_negotiate(GMAC, BOARD_GMAC_PHY_ADDR) != GMAC_OK) {
+		//bc = 4;
+	//}
+//
+	///* Establish ethernet link */
+	//while (ethernet_phy_set_link(GMAC, BOARD_GMAC_PHY_ADDR, 1) != GMAC_OK) {
+		//bc = 5;
+	//};
 
     /* Replace with your application code */
+	uint8_t led = 0;
     while (1)
     {
-		if( GMAC_OK == gmac_dev_read(&gs_gmac_dev, GMAC_QUE_0, (uint8_t *) gs_uc_eth_buffer_a, sizeof(gs_uc_eth_buffer_a), &ul_frm_size) ){
-			if (ul_frm_size > 0) {
-				gmac_process_eth_packet((uint8_t *) gs_uc_eth_buffer_a, ul_frm_size);
-			};
-		};
+		//if( GMAC_OK == gmac_dev_read(&gs_gmac_dev, GMAC_QUE_0, (uint8_t *) gs_uc_eth_buffer_a, sizeof(gs_uc_eth_buffer_a), &ul_frm_size) ){
+			//if (ul_frm_size > 0) {
+				//gmac_process_eth_packet((uint8_t *) gs_uc_eth_buffer_a, ul_frm_size);
+				//if(led == 0){
+					//led	 = 1;
+					//pio_clear(PIOA, PIO_PA2);
+				//}else{
+					//led = 0;
+					//pio_set(PIOA, PIO_PA2);
+				//}
+			//};
+		//};
     };
 };

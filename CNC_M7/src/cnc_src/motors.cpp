@@ -1,33 +1,32 @@
 ﻿#include <motors.h>
 
-void Motors::DirPortPinSet(Pio* t, uint32_t p)
-{
-	this->motor_port_dir_a = t;
-	this->motor_pin_dir_a = p;
-}
-
-void Motors::StepPorPintSet(Pio* t, uint32_t p)
-{
-	this->motor_port_step_a = t;
-	this->motor_pin_step_a = p;
-}
-
 void Motors::DirSet(void)
 {
-	pio_set(motor_port_dir_a, motor_pin_dir_a);
-}
+	pio_set(motor_dir_pio, motor_dir_pin_mask);
+};
 
 void Motors::DirClr(void)
 {
-	pio_clear(motor_port_dir_a, motor_pin_dir_a);
-}
+	pio_clear(motor_dir_pio, motor_dir_pin_mask);
+};
 
 void Motors::StepSet(void)
 {
-	pio_set(motor_port_step_a, motor_pin_step_a);
-}
+	pio_set(motor_step_pio, motor_step_pin_mask);
+};
 
 void Motors::StepClr(void)
 {
-	pio_clear(motor_port_step_a, motor_pin_step_a);
-}
+	pio_clear(motor_step_pio, motor_step_pin_mask);
+};
+
+void Motors::EnSet(void)
+{
+	pio_set(motor_enable_pio, motor_enable_pin_maks);
+};
+
+void Motors::EnClr(void)
+{
+	pio_clear(motor_enable_pio, motor_enable_pin_maks);
+};
+

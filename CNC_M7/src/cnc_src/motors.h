@@ -5,31 +5,30 @@
 
 
 class Motors{
-public:
-	Pio* motor_port_dir_a;
-	uint32_t motor_pin_dir_a;
-	Pio* motor_port_step_a;
-	uint32_t motor_pin_step_a;
+	public:
+	Pio* motor_dir_pio;
+	uint32_t motor_dir_pin_mask;
+	Pio* motor_step_pio;
+	uint32_t motor_step_pin_mask;
+	Pio* motor_enable_pio;
+	uint32_t motor_enable_pin_maks;
 
-	//uint32_t* motor_port_dir_b;
-	//uint32_t motor_pin_dir_b;
-	//uint32_t* motor_port_step_b;
-	//uint32_t motor_pin_step_b;
+	Motors(Pio* DirPio, uint32_t DirPinMask, Pio* StepPio, uint32_t StepPinMask, Pio* EnablePio, uint32_t EnablePinMaks):
+	motor_dir_pio(DirPio),
+	motor_dir_pin_mask(DirPinMask),
 
-	Motors(){};
+	motor_step_pio(StepPio),
+	motor_step_pin_mask(StepPinMask),
 
-	Motors(Pio* PortDir, uint32_t PinDir, Pio* PortStep, uint32_t PinStep):
-		motor_port_dir_a(PortDir),
-		motor_port_step_a(PortStep),
-		motor_pin_dir_a(PinDir),
-		motor_pin_step_a(PinStep)
+	motor_enable_pio(EnablePio),
+	motor_enable_pin_maks(EnablePinMaks)
 	{
+		pio_configure(motor_dir_pio,	PIO_OUTPUT_0, motor_dir_pin_mask,	 PIO_DEFAULT);
+		pio_configure(motor_step_pio,	PIO_OUTPUT_0, motor_step_pin_mask,	 PIO_DEFAULT);
+		pio_configure(motor_enable_pio, PIO_OUTPUT_0, motor_enable_pin_maks, PIO_DEFAULT);
 		DirClr();
 		StepClr();
 	};
-
-	void DirPortPinSet(Pio* t, uint32_t p);
-	void StepPorPintSet(Pio* t, uint32_t p);
 
 	void DirSet(void);
 	void DirClr(void);
@@ -37,21 +36,8 @@ public:
 	void StepSet(void);
 	void StepClr(void);
 
-/*
-	// need be implemented for differential signals
-	void DirPort_A_Set(uint32_t* t);
-	void DirPort_B_Set(uint32_t* t);
-
-	void StepPort_A_Set(uint32_t* t);
-	void StepPort_B_Set(uint32_t* t);
-
-	void DirPin_A_Set(uint32_t t);
-	void DirPin_B_Set(uint32_t t);
-
-	void StepPin_A_Set(uint32_t t);
-	void StepPin_B_Set(uint32_t t);
-*/
-
+	void EnSet(void);
+	void EnClr(void);
 };
 
 #endif // motors_h__

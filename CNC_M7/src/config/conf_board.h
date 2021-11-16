@@ -38,7 +38,7 @@
 #define CONF_BOARD_H_INCLUDED
 
 /** Enable Com Port. */
-//#define CONF_BOARD_UART_CONSOLE
+#define CONF_BOARD_UART_CONSOLE
 
 //! [tc_define_peripheral]
 /* Use TC Peripheral 0. */

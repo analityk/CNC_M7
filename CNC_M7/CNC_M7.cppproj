@@ -18,7 +18,7 @@
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
-    <CacheFlash>true</CacheFlash>
+    <CacheFlash>false</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
     <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
@@ -324,221 +324,217 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
       <ArmGccCpp>
-  <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
-  <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
-  <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
-  <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
-  <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
-  <armgcc.compiler.symbols.DefSymbols>
-    <ListValues>
-      <Value>NDEBUG</Value>
-      <Value>printf=iprintf</Value>
-      <Value>scanf=iscanf</Value>
-      <Value>ARM_MATH_CM7=true</Value>
-      <Value>__SAME70Q21B__</Value>
-      <Value>BOARD=SAME70_XPLAINED</Value>
-    </ListValues>
-  </armgcc.compiler.symbols.DefSymbols>
-  <armgcc.compiler.directories.IncludePaths>
-    <ListValues>
-      <Value>../src/ASF/sam/utils/cmsis/same70/source/templates</Value>
-      <Value>../src/ASF/sam/components/ethernet_phy/ksz8081rna</Value>
-      <Value>../src</Value>
-      <Value>../src/ASF/sam/utils/cmsis/same70/include</Value>
-      <Value>../src/ASF/common/utils</Value>
-      <Value>../src/ASF/sam/utils</Value>
-      <Value>../src/ASF/sam/utils/header_files</Value>
-      <Value>../src/ASF/sam/utils/fpu</Value>
-      <Value>../src/ASF/sam/utils/preprocessor</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Include</Value>
-      <Value>../src/ASF/sam/drivers/pmc</Value>
-      <Value>../src/Config</Value>
-      <Value>../src/ASF/common/services/clock</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
-      <Value>../src/ASF</Value>
-      <Value>../src/ASF/common/boards</Value>
-      <Value>../src/ASF/sam/boards/same70_xplained</Value>
-      <Value>../src/ASF/common/services/ioport</Value>
-      <Value>../src/ASF/sam/drivers/pio</Value>
-      <Value>../src/ASF/common/services/gpio</Value>
-      <Value>../src/ASF/sam/drivers/gmac</Value>
-      <Value>../src/ASF/sam/drivers/uart</Value>
-      <Value>../src/ASF/common/services/serial/sam_uart</Value>
-      <Value>../src/ASF/common/services/twi</Value>
-      <Value>../src/ASF/common/services/serial</Value>
-      <Value>../src/ASF/common/utils/stdio/stdio_serial</Value>
-      <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/twihs</Value>
-      <Value>../src/ASF/sam/drivers/mpu</Value>
-      <Value>../src/config</Value>
-      <Value>../src/ASF/common/services/twi/sam_twihs</Value>
-      <Value>../src/ASF/sam/boards</Value>
-      <Value>../src/ASF/sam/drivers/ssc</Value>
-      <Value>../src/ASF/sam/components/ethernet_phy</Value>
-      <Value>../src/ASF/sam</Value>
-      <Value>../src/ASF/sam/components</Value>
-      <Value>../src/ASF/sam/drivers/xdmac</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
-      <Value>../src/cnc_src</Value>
-    </ListValues>
-  </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
-  <armgcc.compiler.optimization.OtherFlags>-fdata-sections</armgcc.compiler.optimization.OtherFlags>
-  <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
-  <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
-  <armgcc.compiler.miscellaneous.OtherFlags>-pipe -fno-strict-aliasing -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -std=gnu99 -ffunction-sections -fdata-sections -Wchar-subscripts -Wcomment -Wformat=2 -Wimplicit-int -Wmain -Wparentheses -Wsequence-point -Wreturn-type -Wswitch -Wtrigraphs -Wunused -Wuninitialized -Wunknown-pragmas -Wfloat-equal -Wundef -Wshadow -Wbad-function-cast -Wwrite-strings -Wsign-compare -Waggregate-return -Wmissing-declarations -Wformat -Wmissing-format-attribute -Wno-deprecated-declarations -Wpacked -Wredundant-decls -Wnested-externs -Wlong-long -Wunreachable-code -Wcast-align --param max-inline-insns-single=500 -mfloat-abi=softfp -mfpu=fpv5-sp-d16</armgcc.compiler.miscellaneous.OtherFlags>
-  <armgcccpp.compiler.symbols.DefSymbols>
-    <ListValues>
-      <Value>NDEBUG</Value>
-      <Value>printf=iprintf</Value>
-      <Value>scanf=iscanf</Value>
-      <Value>ARM_MATH_CM7=true</Value>
-      <Value>__SAME70Q21B__</Value>
-      <Value>BOARD=SAME70_XPLAINED</Value>
-    </ListValues>
-  </armgcccpp.compiler.symbols.DefSymbols>
-  <armgcccpp.compiler.directories.IncludePaths>
-    <ListValues>
-      <Value>../src/ASF/sam/utils/cmsis/same70/source/templates</Value>
-      <Value>../src/ASF/sam/components/ethernet_phy/ksz8081rna</Value>
-      <Value>../src</Value>
-      <Value>../src/ASF/sam/utils/cmsis/same70/include</Value>
-      <Value>../src/ASF/common/utils</Value>
-      <Value>../src/ASF/sam/utils</Value>
-      <Value>../src/ASF/sam/utils/header_files</Value>
-      <Value>../src/ASF/sam/utils/fpu</Value>
-      <Value>../src/ASF/sam/utils/preprocessor</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Include</Value>
-      <Value>../src/ASF/sam/drivers/pmc</Value>
-      <Value>../src/Config</Value>
-      <Value>../src/ASF/common/services/clock</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
-      <Value>../src/ASF</Value>
-      <Value>../src/ASF/common/boards</Value>
-      <Value>../src/ASF/sam/boards/same70_xplained</Value>
-      <Value>../src/ASF/common/services/ioport</Value>
-      <Value>../src/ASF/sam/drivers/pio</Value>
-      <Value>../src/ASF/common/services/gpio</Value>
-      <Value>../src/ASF/sam/drivers/gmac</Value>
-      <Value>../src/ASF/sam/drivers/uart</Value>
-      <Value>../src/ASF/common/services/serial/sam_uart</Value>
-      <Value>../src/ASF/common/services/twi</Value>
-      <Value>../src/ASF/common/services/serial</Value>
-      <Value>../src/ASF/common/utils/stdio/stdio_serial</Value>
-      <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/twihs</Value>
-      <Value>../src/ASF/sam/drivers/mpu</Value>
-      <Value>../src/config</Value>
-      <Value>../src/ASF/common/services/twi/sam_twihs</Value>
-      <Value>../src/ASF/sam/boards</Value>
-      <Value>../src/ASF/sam/drivers/ssc</Value>
-      <Value>../src/ASF/sam/components/ethernet_phy</Value>
-      <Value>../src/ASF/sam</Value>
-      <Value>../src/ASF/sam/components</Value>
-      <Value>../src/ASF/sam/drivers/xdmac</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
-      <Value>../src/cnc_src</Value>
-    </ListValues>
-  </armgcccpp.compiler.directories.IncludePaths>
-  <armgcccpp.compiler.optimization.level>Optimize for size (-Os)</armgcccpp.compiler.optimization.level>
-  <armgcccpp.compiler.optimization.OtherFlags>-fdata-sections</armgcccpp.compiler.optimization.OtherFlags>
-  <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
-  <armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>
-  <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
-  <armgcccpp.compiler.miscellaneous.OtherFlags>-std=c++11  -pipe -fno-strict-aliasing  -ffunction-sections -fdata-sections --param max-inline-insns-single=1000 -mfloat-abi=softfp -mfpu=fpv5-sp-d16 -mcpu=cortex-m7</armgcccpp.compiler.miscellaneous.OtherFlags>
-  <armgcccpp.linker.libraries.Libraries>
-    <ListValues>
-      <Value>libarm_cortexM7lfsp_math_softfp</Value>
-      <Value>libm</Value>
-      <Value>libarm_cortexM7lfsp_math.a</Value>
-    </ListValues>
-  </armgcccpp.linker.libraries.Libraries>
-  <armgcccpp.linker.libraries.LibrarySearchPaths>
-    <ListValues>
-      <Value>../src/ASF/sam/utils/linker_scripts/same70/same70q21/gcc</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
-    </ListValues>
-  </armgcccpp.linker.libraries.LibrarySearchPaths>
-  <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
-  <armgcccpp.linker.memorysettings.ExternalRAM />
-  <armgcccpp.linker.miscellaneous.LinkerFlags>-Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam/utils/linker_scripts/same70/same70q21/gcc/flash.ld</armgcccpp.linker.miscellaneous.LinkerFlags>
-  <armgcccpp.assembler.general.IncludePaths>
-    <ListValues>
-      <Value>../src/ASF/sam/drivers/gmac</Value>
-      <Value>../src</Value>
-      <Value>../src/ASF/sam/utils/cmsis/same70/include</Value>
-      <Value>../src/ASF/sam/utils/cmsis/same70/source/templates</Value>
-      <Value>../src/ASF/sam/utils</Value>
-      <Value>../src/ASF/sam/utils/header_files</Value>
-      <Value>../src/ASF/sam/utils/preprocessor</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Include</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
-      <Value>../src/ASF/sam/utils/fpu</Value>
-      <Value>../src/ASF/common/utils</Value>
-      <Value>../src/ASF/sam/drivers/pmc</Value>
-      <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/drivers/twihs</Value>
-      <Value>../src/ASF/common/services/clock</Value>
-      <Value>../src/ASF/common/utils/stdio/stdio_serial</Value>
-      <Value>../src/ASF/common/services/serial/sam_uart</Value>
-      <Value>../src/ASF/common/services/serial</Value>
-      <Value>../src/ASF/sam/drivers/uart</Value>
-      <Value>../src/ASF/sam/boards/same70_xplained</Value>
-      <Value>../src/ASF/sam/boards</Value>
-      <Value>../src/ASF/common/boards</Value>
-      <Value>../src/ASF/common/services/ioport</Value>
-      <Value>../src/ASF/common/services/gpio</Value>
-      <Value>../src/ASF/sam/drivers/pio</Value>
-      <Value>../src/ASF/sam/drivers/mpu</Value>
-      <Value>../src/Config</Value>
-      <Value>../src/ASF/common/services/twi</Value>
-      <Value>../src/ASF/common/services/twi/sam_twihs</Value>
-      <Value>../src/ASF/sam/drivers/ssc</Value>
-      <Value>../src/ASF/sam/components/ethernet_phy/ksz8081rna</Value>
-      <Value>../src/ASF/sam/drivers/xdmac</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
-    </ListValues>
-  </armgcccpp.assembler.general.IncludePaths>
-  <armgcccpp.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM7=true -DBOARD=SAME70_XPLAINED -D__SAME70Q21B__ -Dprintf=iprintf -Dscanf=iscanf</armgcccpp.preprocessingassembler.general.AssemblerFlags>
-  <armgcccpp.preprocessingassembler.general.IncludePaths>
-    <ListValues>
-      <Value>../src/ASF/sam/drivers/gmac</Value>
-      <Value>../src</Value>
-      <Value>../src/ASF/sam/utils/cmsis/same70/include</Value>
-      <Value>../src/ASF/sam/utils/cmsis/same70/source/templates</Value>
-      <Value>../src/ASF/sam/utils</Value>
-      <Value>../src/ASF/sam/utils/header_files</Value>
-      <Value>../src/ASF/sam/utils/preprocessor</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Include</Value>
-      <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
-      <Value>../src/ASF/sam/utils/fpu</Value>
-      <Value>../src/ASF/common/utils</Value>
-      <Value>../src/ASF/sam/drivers/pmc</Value>
-      <Value>../src/ASF/sam/drivers/uart</Value>
-      <Value>../src/ASF/sam/drivers/twihs</Value>
-      <Value>../src/ASF/common/services/clock</Value>
-      <Value>../src/ASF/common/utils/stdio/stdio_serial</Value>
-      <Value>../src/ASF/common/services/serial/sam_uart</Value>
-      <Value>../src/ASF/common/services/serial</Value>
-      <Value>../src/ASF/sam/drivers/usart</Value>
-      <Value>../src/ASF/sam/boards/same70_xplained</Value>
-      <Value>../src/ASF/sam/boards</Value>
-      <Value>../src/ASF/common/boards</Value>
-      <Value>../src/ASF/common/services/ioport</Value>
-      <Value>../src/ASF/common/services/gpio</Value>
-      <Value>../src/ASF/sam/drivers/pio</Value>
-      <Value>../src/ASF/sam/drivers/mpu</Value>
-      <Value>../src/Config</Value>
-      <Value>../src/ASF</Value>
-      <Value>../src/ASF/common/services/twi</Value>
-      <Value>../src/ASF/common/services/twi/sam_twihs</Value>
-      <Value>../src/ASF/sam/drivers/ssc</Value>
-      <Value>../src/ASF/sam/components/ethernet_phy/ksz8081rna</Value>
-      <Value>../src/ASF/sam/drivers/xdmac</Value>
-      <Value>../src/ASF/sam/drivers/tc</Value>
-    </ListValues>
-  </armgcccpp.preprocessingassembler.general.IncludePaths>
-</ArmGccCpp>
+        <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
+        <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
+        <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
+        <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
+        <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
+        <armgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+            <Value>printf=iprintf</Value>
+            <Value>scanf=iscanf</Value>
+            <Value>ARM_MATH_CM7=true</Value>
+            <Value>__SAME70Q21B__</Value>
+            <Value>BOARD=SAME70_XPLAINED</Value>
+          </ListValues>
+        </armgcc.compiler.symbols.DefSymbols>
+        <armgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>../src/ASF/sam/utils/cmsis/same70/source/templates</Value>
+            <Value>../src/ASF/sam/components/ethernet_phy/ksz8081rna</Value>
+            <Value>../src</Value>
+            <Value>../src/ASF/sam/utils/cmsis/same70/include</Value>
+            <Value>../src/ASF/common/utils</Value>
+            <Value>../src/ASF/sam/utils</Value>
+            <Value>../src/ASF/sam/utils/header_files</Value>
+            <Value>../src/ASF/sam/utils/fpu</Value>
+            <Value>../src/ASF/sam/utils/preprocessor</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Include</Value>
+            <Value>../src/ASF/sam/drivers/pmc</Value>
+            <Value>../src/Config</Value>
+            <Value>../src/ASF/common/services/clock</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
+            <Value>../src/ASF</Value>
+            <Value>../src/ASF/common/boards</Value>
+            <Value>../src/ASF/sam/boards/same70_xplained</Value>
+            <Value>../src/ASF/common/services/ioport</Value>
+            <Value>../src/ASF/sam/drivers/pio</Value>
+            <Value>../src/ASF/common/services/gpio</Value>
+            <Value>../src/ASF/sam/drivers/gmac</Value>
+            <Value>../src/ASF/sam/drivers/uart</Value>
+            <Value>../src/ASF/common/services/serial/sam_uart</Value>
+            <Value>../src/ASF/common/services/twi</Value>
+            <Value>../src/ASF/common/services/serial</Value>
+            <Value>../src/ASF/common/utils/stdio/stdio_serial</Value>
+            <Value>../src/ASF/sam/drivers/usart</Value>
+            <Value>../src/ASF/sam/drivers/twihs</Value>
+            <Value>../src/ASF/sam/drivers/mpu</Value>
+            <Value>../src/config</Value>
+            <Value>../src/ASF/common/services/twi/sam_twihs</Value>
+            <Value>../src/ASF/sam/boards</Value>
+            <Value>../src/ASF/sam/drivers/ssc</Value>
+            <Value>../src/ASF/sam/components/ethernet_phy</Value>
+            <Value>../src/ASF/sam</Value>
+            <Value>../src/ASF/sam/components</Value>
+            <Value>../src/ASF/sam/drivers/xdmac</Value>
+            <Value>../src/ASF/sam/drivers/tc</Value>
+            <Value>../src/cnc_src</Value>
+          </ListValues>
+        </armgcc.compiler.directories.IncludePaths>
+        <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
+        <armgcc.compiler.optimization.OtherFlags>-fdata-sections</armgcc.compiler.optimization.OtherFlags>
+        <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+        <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
+        <armgcc.compiler.miscellaneous.OtherFlags>-pipe -fno-strict-aliasing -Wall -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -std=gnu99 -ffunction-sections -fdata-sections -Wchar-subscripts -Wcomment -Wformat=2 -Wimplicit-int -Wmain -Wparentheses -Wsequence-point -Wreturn-type -Wswitch -Wtrigraphs -Wunused -Wuninitialized -Wunknown-pragmas -Wfloat-equal -Wundef -Wshadow -Wbad-function-cast -Wwrite-strings -Wsign-compare -Waggregate-return -Wmissing-declarations -Wformat -Wmissing-format-attribute -Wno-deprecated-declarations -Wpacked -Wredundant-decls -Wnested-externs -Wlong-long -Wunreachable-code -Wcast-align --param max-inline-insns-single=500 -mfloat-abi=softfp -mfpu=fpv5-sp-d16</armgcc.compiler.miscellaneous.OtherFlags>
+        <armgcccpp.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+            <Value>printf=iprintf</Value>
+            <Value>scanf=iscanf</Value>
+            <Value>ARM_MATH_CM7=true</Value>
+            <Value>__SAME70Q21B__</Value>
+            <Value>BOARD=SAME70_XPLAINED</Value>
+          </ListValues>
+        </armgcccpp.compiler.symbols.DefSymbols>
+        <armgcccpp.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>../src/ASF/sam/utils/cmsis/same70/source/templates</Value>
+            <Value>../src/ASF/sam/components/ethernet_phy/ksz8081rna</Value>
+            <Value>../src</Value>
+            <Value>../src/ASF/sam/utils/cmsis/same70/include</Value>
+            <Value>../src/ASF/common/utils</Value>
+            <Value>../src/ASF/sam/utils</Value>
+            <Value>../src/ASF/sam/utils/header_files</Value>
+            <Value>../src/ASF/sam/utils/fpu</Value>
+            <Value>../src/ASF/sam/utils/preprocessor</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Include</Value>
+            <Value>../src/ASF/sam/drivers/pmc</Value>
+            <Value>../src/Config</Value>
+            <Value>../src/ASF/common/services/clock</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
+            <Value>../src/ASF</Value>
+            <Value>../src/ASF/common/boards</Value>
+            <Value>../src/ASF/sam/boards/same70_xplained</Value>
+            <Value>../src/ASF/common/services/ioport</Value>
+            <Value>../src/ASF/sam/drivers/pio</Value>
+            <Value>../src/ASF/common/services/gpio</Value>
+            <Value>../src/ASF/sam/drivers/gmac</Value>
+            <Value>../src/ASF/sam/drivers/uart</Value>
+            <Value>../src/ASF/common/services/serial/sam_uart</Value>
+            <Value>../src/ASF/common/services/twi</Value>
+            <Value>../src/ASF/common/services/serial</Value>
+            <Value>../src/ASF/common/utils/stdio/stdio_serial</Value>
+            <Value>../src/ASF/sam/drivers/usart</Value>
+            <Value>../src/ASF/sam/drivers/twihs</Value>
+            <Value>../src/ASF/sam/drivers/mpu</Value>
+            <Value>../src/config</Value>
+            <Value>../src/ASF/common/services/twi/sam_twihs</Value>
+            <Value>../src/ASF/sam/boards</Value>
+            <Value>../src/ASF/sam/drivers/ssc</Value>
+            <Value>../src/ASF/sam/components/ethernet_phy</Value>
+            <Value>../src/ASF/sam</Value>
+            <Value>../src/ASF/sam/components</Value>
+            <Value>../src/ASF/sam/drivers/xdmac</Value>
+            <Value>../src/ASF/sam/drivers/tc</Value>
+            <Value>../src/cnc_src</Value>
+          </ListValues>
+        </armgcccpp.compiler.directories.IncludePaths>
+        <armgcccpp.compiler.optimization.level>Optimize for size (-Os)</armgcccpp.compiler.optimization.level>
+        <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
+        <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
+        <armgcccpp.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libarm_cortexM7lfsp_math_softfp</Value>
+            <Value>libm</Value>
+            <Value>libarm_cortexM7lfsp_math.a</Value>
+          </ListValues>
+        </armgcccpp.linker.libraries.Libraries>
+        <armgcccpp.linker.libraries.LibrarySearchPaths>
+          <ListValues>
+            <Value>..\src\ASF\thirdparty\CMSIS\Lib\GCC</Value>
+            <Value>%24(ProjectDir)\Device_Startup</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
+          </ListValues>
+        </armgcccpp.linker.libraries.LibrarySearchPaths>
+        <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
+        <armgcccpp.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>../src/ASF/sam/drivers/gmac</Value>
+            <Value>../src</Value>
+            <Value>../src/ASF/sam/utils/cmsis/same70/include</Value>
+            <Value>../src/ASF/sam/utils/cmsis/same70/source/templates</Value>
+            <Value>../src/ASF/sam/utils</Value>
+            <Value>../src/ASF/sam/utils/header_files</Value>
+            <Value>../src/ASF/sam/utils/preprocessor</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Include</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
+            <Value>../src/ASF/sam/utils/fpu</Value>
+            <Value>../src/ASF/common/utils</Value>
+            <Value>../src/ASF/sam/drivers/pmc</Value>
+            <Value>../src/ASF/sam/drivers/usart</Value>
+            <Value>../src/ASF/sam/drivers/twihs</Value>
+            <Value>../src/ASF/common/services/clock</Value>
+            <Value>../src/ASF/common/utils/stdio/stdio_serial</Value>
+            <Value>../src/ASF/common/services/serial/sam_uart</Value>
+            <Value>../src/ASF/common/services/serial</Value>
+            <Value>../src/ASF/sam/drivers/uart</Value>
+            <Value>../src/ASF/sam/boards/same70_xplained</Value>
+            <Value>../src/ASF/sam/boards</Value>
+            <Value>../src/ASF/common/boards</Value>
+            <Value>../src/ASF/common/services/ioport</Value>
+            <Value>../src/ASF/common/services/gpio</Value>
+            <Value>../src/ASF/sam/drivers/pio</Value>
+            <Value>../src/ASF/sam/drivers/mpu</Value>
+            <Value>../src/Config</Value>
+            <Value>../src/ASF/common/services/twi</Value>
+            <Value>../src/ASF/common/services/twi/sam_twihs</Value>
+            <Value>../src/ASF/sam/drivers/ssc</Value>
+            <Value>../src/ASF/sam/components/ethernet_phy/ksz8081rna</Value>
+            <Value>../src/ASF/sam/drivers/xdmac</Value>
+            <Value>../src/ASF/sam/drivers/tc</Value>
+          </ListValues>
+        </armgcccpp.assembler.general.IncludePaths>
+        <armgcccpp.preprocessingassembler.general.AssemblerFlags>-Dprintf=iprintf -Dscanf=iscanf -DARM_MATH_CM7=true</armgcccpp.preprocessingassembler.general.AssemblerFlags>
+        <armgcccpp.preprocessingassembler.general.IncludePaths>
+          <ListValues>
+            <Value>../src/ASF/sam/drivers/gmac</Value>
+            <Value>../src</Value>
+            <Value>../src/ASF/sam/utils/cmsis/same70/include</Value>
+            <Value>../src/ASF/sam/utils/cmsis/same70/source/templates</Value>
+            <Value>../src/ASF/sam/utils</Value>
+            <Value>../src/ASF/sam/utils/header_files</Value>
+            <Value>../src/ASF/sam/utils/preprocessor</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Include</Value>
+            <Value>../src/ASF/thirdparty/CMSIS/Lib/GCC</Value>
+            <Value>../src/ASF/sam/utils/fpu</Value>
+            <Value>../src/ASF/common/utils</Value>
+            <Value>../src/ASF/sam/drivers/pmc</Value>
+            <Value>../src/ASF/sam/drivers/uart</Value>
+            <Value>../src/ASF/sam/drivers/twihs</Value>
+            <Value>../src/ASF/common/services/clock</Value>
+            <Value>../src/ASF/common/utils/stdio/stdio_serial</Value>
+            <Value>../src/ASF/common/services/serial/sam_uart</Value>
+            <Value>../src/ASF/common/services/serial</Value>
+            <Value>../src/ASF/sam/drivers/usart</Value>
+            <Value>../src/ASF/sam/boards/same70_xplained</Value>
+            <Value>../src/ASF/sam/boards</Value>
+            <Value>../src/ASF/common/boards</Value>
+            <Value>../src/ASF/common/services/ioport</Value>
+            <Value>../src/ASF/common/services/gpio</Value>
+            <Value>../src/ASF/sam/drivers/pio</Value>
+            <Value>../src/ASF/sam/drivers/mpu</Value>
+            <Value>../src/Config</Value>
+            <Value>../src/ASF</Value>
+            <Value>../src/ASF/common/services/twi</Value>
+            <Value>../src/ASF/common/services/twi/sam_twihs</Value>
+            <Value>../src/ASF/sam/drivers/ssc</Value>
+            <Value>../src/ASF/sam/components/ethernet_phy/ksz8081rna</Value>
+            <Value>../src/ASF/sam/drivers/xdmac</Value>
+            <Value>../src/ASF/sam/drivers/tc</Value>
+          </ListValues>
+        </armgcccpp.preprocessingassembler.general.IncludePaths>
+      </ArmGccCpp>
     </ToolchainSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -556,6 +552,7 @@
       <Value>scanf=iscanf</Value>
       <Value>ARM_MATH_CM7=true</Value>
       <Value>printf=iprintf</Value>
+      <Value>SAME70_XPLAINED</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
@@ -598,6 +595,11 @@
       <Value>../src/ASF/sam/drivers/xdmac</Value>
       <Value>../src/ASF/sam/drivers/tc</Value>
       <Value>../src/cnc_src</Value>
+      <Value>../src/containers</Value>
+      <Value>../src/Serial</Value>
+      <Value>../../../../../../../../Program Files (x86)/Atmel/Studio/7.0/toolchain/arm/arm-gnu-toolchain/arm-none-eabi/include</Value>
+      <Value>../src/ClassGpio</Value>
+      <Value>../src/ClassSerial</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
   <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
@@ -615,6 +617,7 @@
       <Value>scanf=iscanf</Value>
       <Value>ARM_MATH_CM7=true</Value>
       <Value>printf=iprintf</Value>
+      <Value>SAME70_XPLAINED</Value>
     </ListValues>
   </armgcccpp.compiler.symbols.DefSymbols>
   <armgcccpp.compiler.directories.IncludePaths>
@@ -658,6 +661,10 @@
       <Value>../src/ASF/sam/drivers/xdmac</Value>
       <Value>../src/ASF/sam/drivers/tc</Value>
       <Value>../src/cnc_src</Value>
+      <Value>../src/Serial</Value>
+      <Value>../src/containers</Value>
+      <Value>../src/ClassGpio</Value>
+      <Value>../src/ClassSerial</Value>
     </ListValues>
   </armgcccpp.compiler.directories.IncludePaths>
   <armgcccpp.compiler.optimization.level>Optimize for size (-Os)</armgcccpp.compiler.optimization.level>
@@ -671,7 +678,6 @@
   <armgcccpp.compiler.miscellaneous.OtherFlags>-std=c++11  -pipe -fno-strict-aliasing  -ffunction-sections -fdata-sections --param max-inline-insns-single=1000 -mfloat-abi=softfp -mfpu=fpv5-sp-d16 -mcpu=cortex-m7 -mpoke-function-name</armgcccpp.compiler.miscellaneous.OtherFlags>
   <armgcccpp.linker.libraries.Libraries>
     <ListValues>
-      <Value>libarm_cortexM7lfsp_math_softfp</Value>
       <Value>libm</Value>
     </ListValues>
   </armgcccpp.linker.libraries.Libraries>
@@ -772,6 +778,10 @@
     <Compile Include="src\ASF\sam\drivers\tc\tc.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\ClassGpio\ClassGpio.cpp">
+      <SubType>compile</SubType>
+      <Link>ClassGpio.cpp</Link>
+    </Compile>
     <None Include="src\ASF\sam\drivers\tc\tc.h">
       <SubType>compile</SubType>
     </None>
@@ -816,6 +826,10 @@
     </None>
     <Compile Include="src\ASF\sam\utils\cmsis\same70\include\instance\pioc.h">
       <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\ClassSerial\ClassSerial.cpp">
+      <SubType>compile</SubType>
+      <Link>ClassSerial.cpp</Link>
     </Compile>
     <Compile Include="src\cnc_src\motors.cpp">
       <SubType>compile</SubType>

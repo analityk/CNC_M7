@@ -436,6 +436,7 @@ extern "C"
   /**
    * @brief 32-bit floating-point type definition.
    */
+  #error "here"
   typedef float float32_t;
 
   /**

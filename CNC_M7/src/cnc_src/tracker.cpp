@@ -53,7 +53,7 @@ void Tracker::line_3d(Vector* start, Vector* stop)
 			int8_t mdy = abs_pos.y - start->y;
 			int8_t mdz = abs_pos.z - start->z;
 
-			step(mdx, mdy, mdz);
+			tracker.step(mdx, mdy, mdz);
 
 			abs_pos.x -= mdx;
 			abs_pos.y -= mdy;
@@ -82,7 +82,7 @@ void Tracker::line_3d(Vector* start, Vector* stop)
 				int8_t mdy = abs_pos.y - start->y;
 				int8_t mdz = abs_pos.z - start->z;
 
-				step(mdx, mdy, mdz);
+				tracker.step(mdx, mdy, mdz);
 
 				abs_pos.x -= mdx;
 				abs_pos.y -= mdy;
@@ -110,7 +110,7 @@ void Tracker::line_3d(Vector* start, Vector* stop)
 				int8_t mdy = abs_pos.y - start->y;
 				int8_t mdz = abs_pos.z - start->z;
 
-				step(mdx, mdy, mdz);
+				tracker.step(mdx, mdy, mdz);
 
 				abs_pos.x -= mdx;
 				abs_pos.y -= mdy;
@@ -125,8 +125,9 @@ void Tracker::line_3d(Vector* start, Vector* stop)
 
 void Tracker::step(int8_t x, int8_t y, int8_t z)
 {
-	while( lock ){};
-	lock = 1;
+	while(tracker.lock == 1){};
+
+	tracker.lock = 1;
 
 	if(x > 0){
 		motor_x.DirClr();
@@ -136,7 +137,6 @@ void Tracker::step(int8_t x, int8_t y, int8_t z)
 		motor_x.DirSet();
 		motor_x.StepClr();
 	};
-	// if x == 0 do nothing
 
 	if(y > 0){
 		motor_y.DirClr();
@@ -167,7 +167,7 @@ uint32_t Tracker::set_speed(uint32_t step_per_second)
 		REG_TC0_CMR0 = (MCK_8) | (1<<15) | (1<<14);
 
 		// real speed in step per second
-		step_time = (MCK_DIV_8 / (step_per_second * 2));
+		tracker.step_time = (MCK_DIV_8 / (step_per_second * 2));
 
 		REG_TC0_IER0 = (1<<4);
 		REG_TC0_CCR0 = 5;
@@ -178,7 +178,7 @@ uint32_t Tracker::set_speed(uint32_t step_per_second)
 		REG_TC0_CCR0 = 1;
 		REG_TC0_CMR0 = (MCK_32) | (1<<15) | (1<<14);
 
-		step_time = (MCK_DIV_32 / (step_per_second * 2));
+		tracker.step_time = (MCK_DIV_32 / (step_per_second * 2));
 
 		REG_TC0_IER0 = (1<<4);
 		REG_TC0_CCR0 = 5;
@@ -189,7 +189,7 @@ uint32_t Tracker::set_speed(uint32_t step_per_second)
 		REG_TC0_CCR0 = 1;
 		REG_TC0_CMR0 = (MCK_128) | (1<<15) | (1<<14);
 
-		step_time = (MCK_DIV_128 / (step_per_second * 2));
+		tracker.step_time = (MCK_DIV_128 / (step_per_second * 2));
 
 		REG_TC0_IER0 = (1<<4);
 		REG_TC0_CCR0 = 5;
@@ -201,47 +201,73 @@ uint32_t Tracker::set_speed(uint32_t step_per_second)
 
 uint32_t Tracker::set_accelerate(uint32_t accelerate)
 {
-	target_speed = accelerate;
-	if( actual_speed < target_speed ){
-		acl_phase = 1;
+	tracker.target_speed = tracker.accel;
+	if( tracker.actual_speed < tracker.target_speed ){
+		tracker.acl_phase = 1;
 	};
-	if( actual_speed > target_speed ){
-		dcl_phase = 1;
+	if( tracker.actual_speed > tracker.target_speed ){
+		tracker.dcl_phase = 1;
 	};
 };
 
+
+uint8_t volatile testled = 0;
 // motors speed
 ISR( TC0_Handler ){
 	uint32_t volatile tc0_sr0 = REG_TC0_SR0;
 	UNUSED(tc0_sr0);
 	tracker.lock = 0;
 	REG_TC0_RC0 = (uint16_t)(tracker.step_time);
+
+		if(testled == 1){
+			pio_set(PIOC, PIO_PC8);
+			testled = 0;
+		}else{
+			pio_clear(PIOC, PIO_PC8);
+			testled = 1;
+		};
 };
 
 // accelerate and decelerate
 ISR( TC1_Handler ){
 	uint32_t volatile tc0_sr1 = REG_TC0_SR1;
-	UNUSED(tc0_sr1);
 
-	if( tracker.acl_phase == 1 ){
-		if( tracker.target_speed > tracker.actual_speed ){
-			tracker.actual_speed++;
-			tracker.set_speed(tracker.actual_speed);
-			REG_TC0_RC1 = tracker.accel;	//accelerate;
-		}else{
-			tracker.acl_phase = 0;
-			REG_TC0_RC1 = tracker.accel;
-		};
+	if(tc0_sr1 & (1<<2)){ // set all motor io
+		pio_set(PIOA, PIO_PA19);
 	};
 
-	if( tracker.dcl_phase == 1 ){
-		if( tracker.actual_speed > tracker.target_speed ){
-			tracker.actual_speed--;
-			tracker.set_speed(tracker.actual_speed);
-			REG_TC0_RC1 = tracker.accel;	//decelerate;
-		}else{
-			tracker.dcl_phase = 0;
-			REG_TC0_RC1 = tracker.accel;
+	if(tc0_sr1 & (1<<4)){
+
+
+
+
+		if( tracker.acl_phase == 1 ){
+			if( tracker.target_speed > tracker.actual_speed ){
+				tracker.actual_speed++;
+				tracker.set_speed(tracker.actual_speed);
+				REG_TC0_RC1 = tracker.accel;	//accelerate;
+				REG_TC0_RA1 = tracker.accel / 2;
+			}else{
+				tracker.acl_phase = 0;
+				REG_TC0_RC1 = tracker.accel;
+				REG_TC0_RA1 = tracker.accel / 2;
+			};
 		};
+
+		if( tracker.dcl_phase == 1 ){
+			if( tracker.actual_speed > tracker.target_speed ){
+				tracker.actual_speed--;
+				tracker.set_speed(tracker.actual_speed);
+				REG_TC0_RC1 = tracker.accel;	//decelerate;
+				REG_TC0_RA1 = tracker.accel / 2;
+			}else{
+				tracker.dcl_phase = 0;
+				REG_TC0_RC1 = tracker.accel;
+				REG_TC0_RA1 = tracker.accel / 2;
+			};
+		};
+
+
 	};
+
 };

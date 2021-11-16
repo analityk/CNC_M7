@@ -1,0 +1,1 @@
+wszystkie pliki mialy dodatek "_dep" do rdzenia nazwy
