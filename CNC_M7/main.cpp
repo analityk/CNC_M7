@@ -84,16 +84,21 @@ int main(void)
 	serial.InterruptEnable_RX();
 	serial.write("szymon\r\n");
 
-
-	tracker.set_accelerate(12000);
+	tracker.set_accelerate(50000);
 	tracker.set_target_speed(400);
-	tracker.set_speed(1000);
+	tracker.set_speed(300);
 
     while (1)
     {
-		delay(0xFFFFFFF);
-		tracker.set_target_speed(1000);
-		delay(0xFFFFFFF);
-		tracker.set_target_speed(15000);
+
+		delay(0x6FFFFFF);
+		
+		tracker.set_target_speed(140000);
+		
+		delay(0x2FFFFFF);
+		
+		tracker.set_target_speed(50);
+		
+
     };
 };

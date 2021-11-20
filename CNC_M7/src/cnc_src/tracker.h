@@ -17,6 +17,19 @@
 
 extern uint32_t ticks;
 
+
+typedef struct tc0_data{
+	uint8_t step_x	:	1;
+	uint8_t step_y	:	1;
+	uint8_t step_z	:	1;
+	uint8_t dir_x	:	1;
+	uint8_t dir_y	:	1;
+	uint8_t dir_z	:	1;
+}tc0_data_t, *tc0_data_p;
+
+extern tc0_data_t stsc;
+extern tc0_data_p pstsc;
+
 class Tracker{
 	public:
 
