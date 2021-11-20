@@ -4,6 +4,8 @@
 #include <asf.h>
 #include <../src/containers/array.h>
 
+extern array<uint8_t> uart_rec_buff;
+
 class Serial{
 	public:
 	Serial(void);

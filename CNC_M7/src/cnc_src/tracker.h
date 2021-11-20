@@ -15,6 +15,8 @@
 #define MCK_DIV_32		4687500
 #define MCK_DIV_128		1171875
 
+extern uint32_t ticks;
+
 class Tracker{
 	public:
 
@@ -38,20 +40,29 @@ class Tracker{
 	uint8_t lock;
 
 	Tracker():
-	motor_x(PIOC, PIO_PC14,  PIOA, PIO_PA28,  PIOB, PIO_PB4),
+	motor_x(PIOC, PIO_PC8,   PIOA, PIO_PA30,  PIOB, PIO_PB4),
 	motor_y(PIOA, PIO_PA24,  PIOA, PIO_PA23,  PIOA, PIO_PA31),
 	motor_z(PIOB, PIO_PB2,   PIOA, PIO_PA12,  PIOA, PIO_PA26),
-	actual_speed(1000),
-	target_speed(1000),
+	actual_speed(50),
+	target_speed(9000),
 	abs_pos(1, 1, 1),
 	acl_phase(1),
 	dcl_phase(0),
 	accel(1000),
-	step_time(1000),
+	step_time(100),
 	lock(1)
 	{
 		pmc_enable_periph_clk(ID_TC0);
 		pmc_enable_periph_clk(ID_TC1);
+
+		REG_TC0_CMR0 = (MCK_8) | (1<<15) | (1<<14);
+
+		// real speed in step per second
+		REG_TC0_RC0 = (uint16_t)(MCK_DIV_8 / (1000 * 2));
+
+		REG_TC0_IER0 = (1<<4);
+		REG_TC0_CCR0 = 5;
+
 
 		REG_TC0_CCR1 = 1;
 		REG_TC0_CMR1 = (MCK_32) | (1<<15) | (1<<14);
@@ -60,13 +71,17 @@ class Tracker{
 		REG_TC0_IER1 = (1<<4)|(1<<2);
 		REG_TC0_CCR1 = 5;
 
-		irq_register_handler(TC0_IRQn, 2);
-		irq_register_handler(TC1_IRQn, 1);
+		set_speed(1000);
+		set_target_speed(1000);
+		set_accelerate(100);
+
 	};
 
 	void line_3d(Vector* start, Vector* stop);
 	void step(int8_t x, int8_t y, int8_t z);
+
 	uint32_t set_speed(uint32_t step_per_second);
+	uint32_t set_target_speed(uint32_t step_per_second);
 	uint32_t set_accelerate(uint32_t accelerate);
 
 	// there is 3 instance (0-2) with each instance have 3 channels but you can enalbe clock for 12 timers channel

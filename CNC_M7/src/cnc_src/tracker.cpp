@@ -1,6 +1,20 @@
 ﻿#include <tracker.h>
+#include <ClassSerial.h>
 
 Tracker tracker;
+uint32_t ticks = 0;
+uint8_t volatile speed_change_lock = 0;
+
+typedef struct tc0_data{
+	uint8_t step_x	:	1;
+	uint8_t step_y	:	1;
+	uint8_t step_z	:	1;
+	uint8_t dir_x	:	1;
+	uint8_t dir_y	:	1;
+	uint8_t dir_z	:	1;
+}tc0_data_t;
+
+tc0_data_t tco = { .step_x=1, .step_y=0, .step_z=0, .dir_x=0, .dir_y=0, .dir_z=0 };
 
 void Tracker::line_3d(Vector* start, Vector* stop)
 {
@@ -30,8 +44,7 @@ void Tracker::line_3d(Vector* start, Vector* stop)
         zs = -1;
 	};
 
-    // Driving axis is X-axis
-	//tspeed.Start();
+
     if(dx >= dy && dx >= dz){
         int32_t p1 = 2 * dy - dx;
         int32_t p2 = 2 * dz - dx;
@@ -120,7 +133,7 @@ void Tracker::line_3d(Vector* start, Vector* stop)
 		};
 
 	};
-	//tspeed.Stop();
+
 };
 
 void Tracker::step(int8_t x, int8_t y, int8_t z)
@@ -128,145 +141,182 @@ void Tracker::step(int8_t x, int8_t y, int8_t z)
 	while(tracker.lock == 1){};
 
 	tracker.lock = 1;
-
-	if(x > 0){
-		motor_x.DirClr();
-		motor_x.StepClr();
-	};
-	if(x < 0){
-		motor_x.DirSet();
-		motor_x.StepClr();
-	};
-
-	if(y > 0){
-		motor_y.DirClr();
-		motor_y.StepClr();
-	};
-	if(y < 0){
-		motor_y.DirSet();
-		motor_y.StepClr();
-	};
-
-	if( z > 0){
-		motor_z.DirClr();
-		motor_z.StepClr();
-	};
-	if(z < 0){
-		motor_z.DirSet();
-		motor_z.StepClr();
-	};
 };
 
 uint32_t Tracker::set_speed(uint32_t step_per_second)
 {
-	if(step_per_second > 300){
-		// div_8
-		// stop timer
-		REG_TC0_CCR0 = 1;
-		// set mck div=8, interrupt on rc compare, wave mode
-		REG_TC0_CMR0 = (MCK_8) | (1<<15) | (1<<14);
 
-		// real speed in step per second
-		tracker.step_time = (MCK_DIV_8 / (step_per_second * 2));
-
-		REG_TC0_IER0 = (1<<4);
-		REG_TC0_CCR0 = 5;
-		return 8;
-	};
-
-	if(step_per_second > 75){
-		REG_TC0_CCR0 = 1;
-		REG_TC0_CMR0 = (MCK_32) | (1<<15) | (1<<14);
-
-		tracker.step_time = (MCK_DIV_32 / (step_per_second * 2));
-
-		REG_TC0_IER0 = (1<<4);
-		REG_TC0_CCR0 = 5;
-		return 32;
-	};
-
-	if(step_per_second > 20){
-		REG_TC0_CCR0 = 1;
-		REG_TC0_CMR0 = (MCK_128) | (1<<15) | (1<<14);
-
-		tracker.step_time = (MCK_DIV_128 / (step_per_second * 2));
-
-		REG_TC0_IER0 = (1<<4);
-		REG_TC0_CCR0 = 5;
-		return 128;
-	};
-
+	tracker.actual_speed = step_per_second;
 	return 0;
+};
+
+uint32_t Tracker::set_target_speed(uint32_t step_per_second)
+{
+	tracker.target_speed = step_per_second;
 };
 
 uint32_t Tracker::set_accelerate(uint32_t accelerate)
 {
-	tracker.target_speed = tracker.accel;
-	if( tracker.actual_speed < tracker.target_speed ){
-		tracker.acl_phase = 1;
+	tracker.accel = accelerate;
+
+	if(accelerate > 300){
+		// div_8
+		// stop timer
+		REG_TC0_CCR1 = 1;
+		// set mck div=8, interrupt on rc compare, wave mode
+		REG_TC0_CMR1 = (MCK_8) | (1<<15) | (1<<14);
+
+		// real speed in step per second
+		tracker.accel = (MCK_DIV_8 / (accelerate * 2));
+
+		REG_TC0_IER1 = (1<<4);
+		REG_TC0_CCR1 = 5;
+		return 8;
 	};
-	if( tracker.actual_speed > tracker.target_speed ){
-		tracker.dcl_phase = 1;
+
+	if(accelerate > 75){
+		REG_TC0_CCR1 = 1;
+		REG_TC0_CMR1 = (MCK_32) | (1<<15) | (1<<14);
+
+		tracker.accel = (MCK_DIV_32 / (accelerate * 2));
+
+		REG_TC0_IER1 = (1<<4);
+		REG_TC0_CCR1 = 5;
+		return 32;
 	};
+
+	if(accelerate > 20){
+		REG_TC0_CCR1 = 1;
+		REG_TC0_CMR1 = (MCK_128) | (1<<15) | (1<<14);
+
+		tracker.accel = (MCK_DIV_128 / (accelerate * 2));
+
+		REG_TC0_IER1 = (1<<4);
+		REG_TC0_CCR1 = 5;
+		return 128;
+	};
+
+	return 0;
+
 };
 
 
-uint8_t volatile testled = 0;
+uint8_t volatile set_clr_phase = 0;
+
 // motors speed
 ISR( TC0_Handler ){
 	uint32_t volatile tc0_sr0 = REG_TC0_SR0;
 	UNUSED(tc0_sr0);
 	tracker.lock = 0;
-	REG_TC0_RC0 = (uint16_t)(tracker.step_time);
 
-		if(testled == 1){
-			pio_set(PIOC, PIO_PC8);
-			testled = 0;
-		}else{
-			pio_clear(PIOC, PIO_PC8);
-			testled = 1;
+	if(tracker.actual_speed > 300){
+		// div_8
+		// set mck div=8, interrupt on rc compare, wave mode
+		REG_TC0_CMR0 = (MCK_8) | (1<<15) | (1<<14);
+
+		// real speed in step per second
+		REG_TC0_RC0 = (uint16_t)(MCK_DIV_8 / (tracker.actual_speed * 2));
+
+		REG_TC0_IER0 = (1<<4);
+		REG_TC0_CCR0 = 5;
+	};
+
+	//if(tracker.actual_speed > 75){
+		//REG_TC0_CMR0 = (MCK_32) | (1<<15) | (1<<14);
+//
+		//tracker.step_time = (MCK_DIV_32 / (tracker.actual_speed * 2));
+//
+		//REG_TC0_IER0 = (1<<4);
+		//REG_TC0_CCR0 = 5;
+	//};
+//
+	//if(tracker.actual_speed > 20){
+		//REG_TC0_CMR0 = (MCK_128) | (1<<15) | (1<<14);
+//
+		//tracker.step_time = (MCK_DIV_128 / (tracker.actual_speed * 2));
+//
+		//REG_TC0_IER0 = (1<<4);
+		//REG_TC0_CCR0 = 5;
+	//};
+
+	//REG_TC0_RC0 = (uint16_t)(tracker.step_time);
+	
+	ticks++;
+
+	if(set_clr_phase == 1){
+		set_clr_phase = 0;
+
+		if(tco.step_x == 1){
+
+			if(tco.dir_x == 1){
+				tracker.motor_x.DirClr();
+			}else{
+				tracker.motor_x.DirSet();
+			};
+
+			tracker.motor_x.StepClr();
 		};
+
+		if(tco.step_y == 1){
+
+			if(tco.dir_y == 1){
+				tracker.motor_y.DirClr();
+			}else{
+				tracker.motor_y.DirSet();
+			};
+
+			tracker.motor_y.StepClr();
+		};
+
+		if(tco.step_z == 1){
+
+			if(tco.dir_z == 1){
+				tracker.motor_z.DirClr();
+			}else{
+				tracker.motor_z.DirSet();
+			};
+
+			tracker.motor_z.StepClr();
+		};
+	}else{
+		set_clr_phase = 1;
+
+		tracker.motor_x.StepSet();
+		tracker.motor_y.StepSet();
+		tracker.motor_z.StepSet();
+	};
+
 };
 
 // accelerate and decelerate
+uint8_t volatile ttt = 0;
+
 ISR( TC1_Handler ){
 	uint32_t volatile tc0_sr1 = REG_TC0_SR1;
+	UNUSED(tc0_sr1);
 
-	if(tc0_sr1 & (1<<2)){ // set all motor io
-		pio_set(PIOA, PIO_PA19);
-	};
+	//if(ttt==0){
+		//ttt=1;
+		//pio_set(PIOA, PIO_PA2);
+	//}else{
+		//ttt=0;
+		//pio_clear(PIOA, PIO_PA2);
+	//};
+
+	REG_TC0_RC1 = (uint16_t)tracker.accel;
+	REG_TC0_RA1 = (uint16_t)tracker.accel / 2;
 
 	if(tc0_sr1 & (1<<4)){
 
-
-
-
-		if( tracker.acl_phase == 1 ){
 			if( tracker.target_speed > tracker.actual_speed ){
-				tracker.actual_speed++;
+				tracker.actual_speed += 1;
 				tracker.set_speed(tracker.actual_speed);
-				REG_TC0_RC1 = tracker.accel;	//accelerate;
-				REG_TC0_RA1 = tracker.accel / 2;
-			}else{
-				tracker.acl_phase = 0;
-				REG_TC0_RC1 = tracker.accel;
-				REG_TC0_RA1 = tracker.accel / 2;
 			};
-		};
 
-		if( tracker.dcl_phase == 1 ){
 			if( tracker.actual_speed > tracker.target_speed ){
-				tracker.actual_speed--;
+				tracker.actual_speed -= 1;
 				tracker.set_speed(tracker.actual_speed);
-				REG_TC0_RC1 = tracker.accel;	//decelerate;
-				REG_TC0_RA1 = tracker.accel / 2;
-			}else{
-				tracker.dcl_phase = 0;
-				REG_TC0_RC1 = tracker.accel;
-				REG_TC0_RA1 = tracker.accel / 2;
 			};
-		};
-
 
 	};
 

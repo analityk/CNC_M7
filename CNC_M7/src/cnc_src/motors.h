@@ -23,9 +23,9 @@ class Motors{
 	motor_enable_pio(EnablePio),
 	motor_enable_pin_maks(EnablePinMaks)
 	{
-		pio_configure(motor_dir_pio,	PIO_OUTPUT_0, motor_dir_pin_mask,	 PIO_DEFAULT);
-		pio_configure(motor_step_pio,	PIO_OUTPUT_0, motor_step_pin_mask,	 PIO_DEFAULT);
-		pio_configure(motor_enable_pio, PIO_OUTPUT_0, motor_enable_pin_maks, PIO_DEFAULT);
+		pio_configure(motor_dir_pio,	PIO_OUTPUT_0, motor_dir_pin_mask,	 PIO_PULLUP);
+		pio_configure(motor_step_pio,	PIO_OUTPUT_0, motor_step_pin_mask,	 PIO_PULLUP);
+		pio_configure(motor_enable_pio, PIO_OUTPUT_0, motor_enable_pin_maks, PIO_PULLUP);
 		DirClr();
 		StepClr();
 	};

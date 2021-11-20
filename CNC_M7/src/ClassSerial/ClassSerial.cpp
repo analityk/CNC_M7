@@ -2,21 +2,33 @@
 
 sam_uart_opt_t rs232_opt;
 
+array<uint8_t> uart_rec_buff(10);
 
 void init_232(void){
 	uart_init(UART4, &rs232_opt);
 	uart_enable(UART4);
 };
 
+
+
+ISR( UART4_Handler ){
+	volatile uint32_t t = REG_UART4_SR;
+	UNUSED(t);
+	uart_rec_buff.insert(REG_UART4_RHR);
+	if(uart_rec_buff.full()){
+		serial.write("full recevie buffer\r\n");
+	};
+};
+
+
 Serial::Serial(void){
 	pio_configure(PIOD, PIO_PERIPH_C, PIO_PD18, PIO_DEFAULT);
 	pio_configure(PIOD, PIO_PERIPH_C, PIO_PD19, PIO_DEFAULT);
 	pmc_enable_periph_clk(ID_UART4);
 
-
 	rs232_opt.ul_baudrate = 115200;
 	rs232_opt.ul_mck = 150000000;
-	rs232_opt.ul_mode = (4<<9); // parity none
+	rs232_opt.ul_mode = UART_MR_PAR_NO; // parity none
 	init_232();
 };
 
@@ -37,12 +49,12 @@ void Serial::Disable(void)
 
 void Serial::InterruptEnable_RX(void)
 {
-	//uart_enable_interrupt(UART4, )
+	uart_enable_interrupt(UART4, UART_IER_RXRDY);
 };
 
 void Serial::InterruptDisable_RX(void)
 {
-	//
+	uart_disable_interrupt(UART4, UART_IER_RXRDY);
 };
 
 void Serial::write(uint8_t* buff, uint8_t size){
