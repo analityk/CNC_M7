@@ -14,6 +14,9 @@ public:
 	Vector(int32_t a, int32_t b, int32_t c):x(a), y(b), z(c){};
 	Vector(const Vector& v):x(v.x), y(v.y), z(v.z){};
 	Vector(Vector* a, Vector* b):x(b->x - a->x), y(b->y - a->y), z(b->z - a->z){};
+
+	static float Length(Vector* a, Vector* b);
+
 };
 
 #endif // vector_h__

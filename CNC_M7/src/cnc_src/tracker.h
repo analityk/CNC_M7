@@ -17,18 +17,25 @@
 
 extern uint32_t ticks;
 
-
 typedef struct tc0_data{
-	uint8_t step_x	:	1;
-	uint8_t step_y	:	1;
-	uint8_t step_z	:	1;
-	uint8_t dir_x	:	1;
-	uint8_t dir_y	:	1;
-	uint8_t dir_z	:	1;
-}tc0_data_t, *tc0_data_p;
+		uint8_t step_x	:	1;
+		uint8_t step_y	:	1;
+		uint8_t step_z	:	1;
+		uint8_t dir_x	:	1;
+		uint8_t dir_y	:	1;
+		uint8_t dir_z	:	1;
+		uint8_t unused	:	2;
+}tc0_data_t;
 
-extern tc0_data_t stsc;
-extern tc0_data_p pstsc;
+extern tc0_data_t step_buffer[];
+extern uint16_t step_buffer_offset;
+extern uint16_t volatile step_buffer_cnt;
+extern uint16_t volatile step_executed;
+
+extern int32_t actual_x_position;
+extern int32_t actual_y_position;
+extern int32_t actual_z_position;
+
 
 class Tracker{
 	public:
@@ -90,8 +97,12 @@ class Tracker{
 
 	};
 
+	void stop(void);
+	void start(void);
 	void line_3d(Vector* start, Vector* stop);
+	uint32_t line_xy(Vector* start, Vector* end);
 	void step(int8_t x, int8_t y, int8_t z);
+	void step_xy(int32_t* x, int32_t* y);
 
 	uint32_t set_speed(uint32_t step_per_second);
 	uint32_t set_target_speed(uint32_t step_per_second);

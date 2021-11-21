@@ -84,21 +84,29 @@ int main(void)
 	serial.InterruptEnable_RX();
 	serial.write("szymon\r\n");
 
-	tracker.set_accelerate(50000);
-	tracker.set_target_speed(400);
-	tracker.set_speed(300);
+	//tracker.stop();
+	tracker.set_accelerate(100);
+	tracker.set_target_speed(1000);
+	tracker.set_speed(100);
+
+	Vector a(0,0,0);
+	Vector b(810,0,0);
+
+	char r[40];
+
+
+	uint32_t len = tracker.line_xy(&a, &b);
+	
+	sprintf(r, "vect len: %d\r\n", len);
+	serial.write(r);
+
+	tracker.start();
 
     while (1)
     {
+		serial.write("nie zacielo\r\n");
 
 		delay(0x6FFFFFF);
-		
-		tracker.set_target_speed(140000);
-		
-		delay(0x2FFFFFF);
-		
-		tracker.set_target_speed(50);
-		
 
     };
 };
